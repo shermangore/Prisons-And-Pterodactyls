@@ -1,0 +1,85 @@
+body {
+    background-image: url("../images/Background_1.jpg");
+    color: #fff;
+}
+
+h1 {
+    font-family: "Metamorphous", cursive;
+    text-shadow: 2px 1px #000;
+}
+
+.img-box-good {
+    width: 360px;
+    height: 420px;
+    background-image: url('../images/MagicianGirl.png');
+    background-color: #fff;
+    border-radius: 10px;
+    border: 2px solid #EBCA63;
+}
+
+.img-box-evil {
+    width: 360px;
+    height: 420px;
+    background-color: #C3CBDE;
+    border-radius: 10px;
+    border: 2px solid Red;
+}
+
+#divVS {
+    font-size: 72px;
+    font-family: "Inknut Antiqua", cursive;
+    color: silver;
+    height: 420px;
+    min-height: 420px;
+    line-height: 420px;
+    text-shadow: 3px 1px darkgoldenrod;
+}
+
+.jumbotron {
+    font-weight: bold;
+    color: red;
+    background-image: url('../images/jumbotron-bg.png');
+    border: 2px solid #4D537D;
+}
+
+
+.stats {
+    color: maroon;
+    background-color: darkgray;
+}
+
+.thumbnail {
+    display: flex;
+    width: 120px;
+    height: 165px;
+    margin-right: 25px;
+}
+
+.thumbnailImage {
+    margin: 0 auto;
+}
+
+.carousel {
+    padding-left: 13%;
+}
+
+.battle-partner {
+    font-family :"inknut Antiqua", cursive;
+    color: maroon;
+    text-shadow: 1px 1px black;
+    background-color: white;
+    opacity: 0.5;
+    width: 33.3%;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    padding: 3px 0 5px 0;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+#evil-image {
+    width: 350px;
+    height: 413px;
+    padding-left: 6px;
+    padding-top: 7px;
+}
