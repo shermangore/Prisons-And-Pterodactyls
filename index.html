@@ -47,9 +47,14 @@ Your players should be able to win and lose the game no matter what character th
         //  - Functions
         //    * Create attack function
         //    * Create counterattack function
-        //    * Create reduceHealth function
         // Create startGame function
         // Create resetGame function
+        let gameStarted = false;
+        let villain;
+        let heroHasLife = true;
+        let villainHasLife = true;
+        let numberOfRounds = 0;
+        let fanfare = new Audio("assets/sounds/fanfare3.wav");
 
     	function Character (name, breed, healthPoints, attackPower, counterAttackPower, isGood, picture, weapons) {
     		this.name = name;
@@ -61,17 +66,73 @@ Your players should be able to win and lose the game no matter what character th
     		this.picture = picture;
     		this.weapons = [];
             this.weapons.push(weapons);
-    		this.attack = function() {
-                // Whenever the player clicks attack, their character damages the defender. The opponent will lose HP (health points). These points are displayed at the bottom of the defender's picture.
-                // The opponent character will instantly counter the attack. When that happens, the player's character will lose some of their HP. These points are shown at the bottom of the player character's picture.
-    		},
-    		this.counterAttack = function() {
-
-    		},
-    		this.reduceHealth = function() {
-
-    		}
     	}
+
+        function attack(player1, player2, attacker) {
+                player2.healthPoints -= player1.attackPower * numberOfRounds;
+                player1.healthPoints -= player2.counterAttackPower;
+
+            if (attacker === "h") {
+                if (player1.healthPoints <= 0) {
+                    heroHasLife = false;
+                    
+                    $("#goodHealth").text(0);
+                    $("#evilHealth").text(player2.healthPoints);
+
+                    partyOn("villain");
+                } else if (player2.healthPoints <= 0) {
+                    villainHasLife = false;
+
+                    $("#goodHealth").text(player1.healthPoints);
+                    $("#evilHealth").text(0);
+
+                    partyOn("hero");
+                } else {
+                    $("#goodHealth").text(player1.healthPoints);
+                    $("#evilHealth").text(player2.healthPoints);
+                }
+            } else {
+                if (player1.healthPoints <= 0) {
+                    villainHasLife = false;
+                    
+                    $("#evilHealth").text(0);
+                    $("#goodHealth").text(player2.healthPoints);
+
+                    partyOn("hero");
+                } else if (player2.healthPoints <= 0) {
+                    heroHasLife = false;
+
+                    $("#evilHealth").text(player1.healthPoints);
+                    $("#goodHealth").text(0);
+
+                    partyOn("villain");
+                } else {
+                    $("#evilHealth").text(player1.healthPoints);
+                    $("#goodHealth").text(player2.healthPoints);
+                }
+            }
+        }
+
+        function partyOn(winner) {
+            let intervalNum = 0;
+            fanfare.play();
+            if (winner === "hero") {
+                intervalNum = setInterval(function() {
+                    $("#img-box-good").css("border", "5px solid blue")
+
+                }, 2000);
+                // $("#img-box-good").animate({
+                //     'border': '5px solid red'
+                // }, 2000, function() {
+                //     $("#img-box-good").animate({
+                //         'border': '1px solid #EBCA63'
+                //     }, 2000, function() {
+                //     });
+                // });
+            } else {
+
+            }
+        }
 
         let wolfGirl =     new Character("Jennix",   "Necromancer", 210, 15, 10, true,  "assets/images/WolfGirl.png",     {"weaponName": "Bow", "damage": 20});
         let magicianGirl = new Character("Zimara",   "Magician",    180, 15, 10, true,  "assets/images/MagicianGirl.png", {"weaponName": "Fireball", "damage": 25});
@@ -88,34 +149,40 @@ Your players should be able to win and lose the game no matter what character th
         let arrCharacters = [wolfGirl, magicianGirl, magicianDude, knightDude2, thiefDude, hornMageDude, thiefGirl, knightDude, elfDude];
 
         $(document).ready(function() {
-            $("#goodName").html("<span>" + wolfGirl.name + "</span>");
-            $("#goodBreed").html("<span>" + wolfGirl.breed + "</span>")
-            $("#goodWeapon").html("<span>" + wolfGirl.weapons[0].weaponName + "</span>")
-            $("#goodStartHealth").html("<span>" + wolfGirl.healthPoints + "</span>")
+            $("#goodName").html("<span>" + magicianGirl.name + "</span>");
+            $("#goodBreed").html("<span>" + magicianGirl.breed + "</span>");
+            $("#goodWeapon").html("<span>" + magicianGirl.weapons[0].weaponName + "</span>");
+            $("#goodStartHealth").html("<span>" + magicianGirl.healthPoints + "</span>");
 
-            $("#evilName").html("<span>" + thiefDude.name + "</span>");
-            $("#evilBreed").html("<span>" + thiefDude.breed + "</span>")
-            $("#evilWeapon").html("<span>" + thiefDude.weapons[0].weaponName + "</span>")
-            $("#evilStartHealth").html("<span>" + thiefDude.healthPoints + "</span>")
+            // $("#evilName").html("<span>" + thiefDude.name + "</span>");
+            // $("#evilBreed").html("<span>" + thiefDude.breed + "</span>");
+            // $("#evilWeapon").html("<span>" + thiefDude.weapons[0].weaponName + "</span>");
+            // $("#evilStartHealth").html("<span>" + thiefDude.healthPoints + "</span>");
 
-            var idx = 0;
+            $("#btnAttack").on("click", function () {
+                numberOfRounds++;
+                // If both warriors have life left, continue fighting
+                if (heroHasLife && villainHasLife) {
+                    // Hero attacks villain
+                    attack(magicianGirl, villain, "h");
+                }
+
+                if (heroHasLife && villainHasLife) {
+                    // Villain attacks hero
+                    attack(villain, magicianGirl, "v");
+                }
+            });
+
+            let idx = 0;
             
             for (let i = 0; i < arrCharacters.length; i++) {
                 if (arrCharacters[i].isGood !== true) {
-                    var divName = "#villian_" + idx;
+                    let divName = "#villain_" + idx;
 
                     $(divName).append("<img src='" + arrCharacters[i].picture + "' alt='" + arrCharacters[i].name + "' class='img-thumbnail' />");
                     idx++;
                 }
             }
-
-            $("#btnAttack").on("click", function(evt) {
-                // get hero's attack power and save to variable
-                // on 1st attack, remove ^^^ from villian's health points
-                // after 1st attack, villian gets to attack hero - points are subtracted from the hero's balance
-                // on 2nd attack, add attack power to previous attack power and then remove that value from villain
-                // continue steps 2 - 4 until either the hero or the villain has no more health points remaining
-            });
 
             $(".img-thumbnail").on("click", function(evt) {
                 switch (this.alt) {
@@ -127,6 +194,8 @@ Your players should be able to win and lose the game no matter what character th
                         $("#evilWeapon").html(thiefDude.weapons[0].weaponName);
                         $("#evilStartHealth").html(thiefDude.healthPoints);
                         $("#evilHealth").html(thiefDude.healthPoints);
+                        
+                        villain = thiefDude;
                         break;
                     case "Rhilo":
                         $("#evil-image").attr("src", hornMageDude.picture);
@@ -136,6 +205,8 @@ Your players should be able to win and lose the game no matter what character th
                         $("#evilWeapon").html(hornMageDude.weapons[0].weaponName);
                         $("#evilStartHealth").html(hornMageDude.healthPoints);
                         $("#evilHealth").html(hornMageDude.healthPoints);
+
+                        villain = hornMageDude;
                         break;
                     case "Wendalia":
                         $("#evil-image").attr("src", thiefGirl.picture);
@@ -145,6 +216,8 @@ Your players should be able to win and lose the game no matter what character th
                         $("#evilWeapon").html(thiefGirl.weapons[0].weaponName);
                         $("#evilStartHealth").html(thiefGirl.healthPoints);
                         $("#evilHealth").html(thiefGirl.healthPoints);
+                        
+                        villain = thiefGirl;
                         break;
                     case "Elvalix":
                         $("#evil-image").attr("src", knightDude.picture);
@@ -154,6 +227,8 @@ Your players should be able to win and lose the game no matter what character th
                         $("#evilWeapon").html(knightDude.weapons[0].weaponName);
                         $("#evilStartHealth").html(knightDude.healthPoints);
                         $("#evilHealth").html(knightDude.healthPoints);
+
+                        villain = knightDude;
                         break;
                     case "Mvrecic":
                         $("#evil-image").attr("src", elfDude.picture);
@@ -163,6 +238,8 @@ Your players should be able to win and lose the game no matter what character th
                         $("#evilWeapon").html(elfDude.weapons[0].weaponName);
                         $("#evilStartHealth").html(elfDude.healthPoints);
                         $("#evilHealth").html(elfDude.healthPoints);
+
+                        villain = elfDude;
                         break;
                 }
             });
@@ -178,11 +255,11 @@ Your players should be able to win and lose the game no matter what character th
         </div>
         <div class="row carousel">
             <div class="col-lg-1">&nbsp;</div>
-            <div class="col-lg-2 thumbnail" id="villian_0"></div>
-            <div class="col-lg-2 thumbnail" id="villian_1"></div>
-            <div class="col-lg-2 thumbnail" id="villian_2"></div>
-            <div class="col-lg-2 thumbnail" id="villian_3"></div>
-            <div class="col-lg-2 thumbnail" id="villian_4"></div>
+            <div class="col-lg-2 thumbnail" id="villain_0"></div>
+            <div class="col-lg-2 thumbnail" id="villain_1"></div>
+            <div class="col-lg-2 thumbnail" id="villain_2"></div>
+            <div class="col-lg-2 thumbnail" id="villain_3"></div>
+            <div class="col-lg-2 thumbnail" id="villain_4"></div>
             <div class="col-lg-1">&nbsp;</div>
         </div>
         <div class="row">
@@ -194,13 +271,13 @@ Your players should be able to win and lose the game no matter what character th
             <div class="col-lg-4 text-center" id="divVS">VS.</div>
             <div class="col-lg-4">
                 <div class="img-box-evil">
-                    <img src="assets/images/empty-villian-3.png" alt="evil" id="evil-image" />
+                    <img src="assets/images/empty-villain-3.png" alt="evil" id="evil-image" />
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-4 health-label-left">
-                <h3 class="health-label-left text-center"><span class="label label-warning">Health <span class="badge" id="goodHealth">210</span></span></h3>
+                <h3 class="health-label-left text-center"><span class="label label-warning">Health <span class="badge" id="goodHealth">180</span></span></h3>
             </div>
             <div class="col-lg-4">&nbsp;</div>
             <div class="col-lg-4">
@@ -260,7 +337,7 @@ Your players should be able to win and lose the game no matter what character th
                             Name:
                         </div>
                         <div class="col-lg-9" id="evilName">
-                            Barbara
+                            
                         </div>
                     </div>
                     <div class="row">
@@ -268,7 +345,7 @@ Your players should be able to win and lose the game no matter what character th
                             Breed:
                         </div>
                         <div class="col-lg-9" id="evilBreed">
-                            Orc
+                            
                         </div>
                     </div>
                     <div class="row">
@@ -276,7 +353,7 @@ Your players should be able to win and lose the game no matter what character th
                             Weapon: 
                         </div>
                         <div class="col-lg-9" id="evilWeapon">
-                            Broadsword
+                            
                         </div>
                     </div>
                     <div class="row">
@@ -284,7 +361,7 @@ Your players should be able to win and lose the game no matter what character th
                             Health:
                         </div>
                         <div class="col-lg-9" id="evilStartHealth">
-                            200
+                            
                         </div>
                     </div>
                 </div>
