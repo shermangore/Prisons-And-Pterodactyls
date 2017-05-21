@@ -35,338 +35,154 @@ Your players should be able to win and lose the game no matter what character th
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
     		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
     		crossorigin="anonymous">
-    <link href="assets/css/reset.css" rel="stylesheet" id="theme-stylesheet"></head>
-    <link href="assets/css/style.css" rel="stylesheet" id="theme-stylesheet"></head>
+    <link href="assets/css/reset.css" rel="stylesheet" id="theme-stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet" id="theme-stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Carter+One|Inknut+Antiqua|Metamorphous" rel="stylesheet">
-<!-- JQuery -->
+    <!-- JQuery -->
     <script src="https://code.jquery.com/jquery.js"></script>
-    <script>
-    	// MOVE ALL OF THIS TO GAME.JS
-    	// Create character object
-        //  - Properties
-        //  - Functions
-        //    * Create attack function
-        //    * Create counterattack function
-        // Create startGame function
-        // Create resetGame function
-        let gameStarted = false;
-        let villain;
-        let heroHasLife = true;
-        let villainHasLife = true;
-        let numberOfRounds = 0;
-        let fanfare = new Audio("assets/sounds/fanfare3.wav");
-
-    	function Character (name, breed, healthPoints, attackPower, counterAttackPower, isGood, picture, weapons) {
-    		this.name = name;
-    		this.breed = breed;
-    		this.healthPoints = healthPoints;
-    		this.attackPower = attackPower;
-    		this.counterAttackPower = counterAttackPower;
-    		this.isGood = isGood;
-    		this.picture = picture;
-    		this.weapons = [];
-            this.weapons.push(weapons);
-    	}
-
-        function attack(player1, player2, attacker) {
-                player2.healthPoints -= player1.attackPower * numberOfRounds;
-                player1.healthPoints -= player2.counterAttackPower;
-
-            if (attacker === "h") {
-                if (player1.healthPoints <= 0) {
-                    heroHasLife = false;
-                    
-                    $("#goodHealth").text(0);
-                    $("#evilHealth").text(player2.healthPoints);
-
-                    partyOn("villain");
-                } else if (player2.healthPoints <= 0) {
-                    villainHasLife = false;
-
-                    $("#goodHealth").text(player1.healthPoints);
-                    $("#evilHealth").text(0);
-
-                    partyOn("hero");
-                } else {
-                    $("#goodHealth").text(player1.healthPoints);
-                    $("#evilHealth").text(player2.healthPoints);
-                }
-            } else {
-                if (player1.healthPoints <= 0) {
-                    villainHasLife = false;
-                    
-                    $("#evilHealth").text(0);
-                    $("#goodHealth").text(player2.healthPoints);
-
-                    partyOn("hero");
-                } else if (player2.healthPoints <= 0) {
-                    heroHasLife = false;
-
-                    $("#evilHealth").text(player1.healthPoints);
-                    $("#goodHealth").text(0);
-
-                    partyOn("villain");
-                } else {
-                    $("#evilHealth").text(player1.healthPoints);
-                    $("#goodHealth").text(player2.healthPoints);
-                }
-            }
-        }
-
-        function partyOn(winner) {
-            let intervalNum = 0;
-            fanfare.play();
-            if (winner === "hero") {
-                intervalNum = setInterval(function() {
-                    $("#img-box-good").css("border", "5px solid blue")
-
-                }, 2000);
-                // $("#img-box-good").animate({
-                //     'border': '5px solid red'
-                // }, 2000, function() {
-                //     $("#img-box-good").animate({
-                //         'border': '1px solid #EBCA63'
-                //     }, 2000, function() {
-                //     });
-                // });
-            } else {
-
-            }
-        }
-
-        let wolfGirl =     new Character("Jennix",   "Necromancer", 210, 15, 10, true,  "assets/images/WolfGirl.png",     {"weaponName": "Bow", "damage": 20});
-        let magicianGirl = new Character("Zimara",   "Magician",    180, 15, 10, true,  "assets/images/MagicianGirl.png", {"weaponName": "Fireball", "damage": 25});
-        let magicianDude = new Character("Coelthen", "Magician",    195, 10, 8,  true,  "assets/images/MagicianDude.png", {"weaponName": "Skullstaff", "damage": 50});
-        let knightDude2 =  new Character("Roendal",  "Knight",      205, 15, 10, true,  "assets/images/KnightDude2.png",  {"weaponName": "Longsword", "damage": 30});
-        let thiefDude =    new Character("Arsenor",  "Thief",       225, 10, 8,  false, "assets/images/ThiefDude.png",    {"weaponName": "Dagger", "damage": 10});
-        let hornMageDude = new Character("Rhilo",    "Mage",        250, 15, 10, false, "assets/images/HornMageDude.png", {"weaponName": "Staff", "damage": 40});
-        let thiefGirl =    new Character("Wendalia", "Thief",       300, 15, 10, false, "assets/images/ThiefGirl.png",    {"weaponName": "Crossbow", "damage": 30});
-        let knightDude =   new Character("Elvalix",  "Knight",      305, 10, 8,  false, "assets/images/KnightDude.png",   {"weaponName": "Broadsword", "damage": 45});
-        let elfDude =      new Character("Mvrecic",  "Elf",         315, 10, 8,  false, "assets/images/ElfDude.png",      {"weaponName": "Longsword", "damage": 25});
-
-        wolfGirl.weapons.push({"weaponName": "dagger", "damage": 10});
-
-        let arrCharacters = [wolfGirl, magicianGirl, magicianDude, knightDude2, thiefDude, hornMageDude, thiefGirl, knightDude, elfDude];
-
-        $(document).ready(function() {
-            $("#goodName").html("<span>" + magicianGirl.name + "</span>");
-            $("#goodBreed").html("<span>" + magicianGirl.breed + "</span>");
-            $("#goodWeapon").html("<span>" + magicianGirl.weapons[0].weaponName + "</span>");
-            $("#goodStartHealth").html("<span>" + magicianGirl.healthPoints + "</span>");
-
-            // $("#evilName").html("<span>" + thiefDude.name + "</span>");
-            // $("#evilBreed").html("<span>" + thiefDude.breed + "</span>");
-            // $("#evilWeapon").html("<span>" + thiefDude.weapons[0].weaponName + "</span>");
-            // $("#evilStartHealth").html("<span>" + thiefDude.healthPoints + "</span>");
-
-            $("#btnAttack").on("click", function () {
-                numberOfRounds++;
-                // If both warriors have life left, continue fighting
-                if (heroHasLife && villainHasLife) {
-                    // Hero attacks villain
-                    attack(magicianGirl, villain, "h");
-                }
-
-                if (heroHasLife && villainHasLife) {
-                    // Villain attacks hero
-                    attack(villain, magicianGirl, "v");
-                }
-            });
-
-            let idx = 0;
-            
-            for (let i = 0; i < arrCharacters.length; i++) {
-                if (arrCharacters[i].isGood !== true) {
-                    let divName = "#villain_" + idx;
-
-                    $(divName).append("<img src='" + arrCharacters[i].picture + "' alt='" + arrCharacters[i].name + "' class='img-thumbnail' />");
-                    idx++;
-                }
-            }
-
-            $(".img-thumbnail").on("click", function(evt) {
-                switch (this.alt) {
-                    case "Arsenor":
-                        $("#evil-image").attr("src", thiefDude.picture);
-                        $("#evil-image").attr("alt", thiefDude.name);
-                        $("#evilName").html(thiefDude.name);
-                        $("#evilBreed").html(thiefDude.breed);
-                        $("#evilWeapon").html(thiefDude.weapons[0].weaponName);
-                        $("#evilStartHealth").html(thiefDude.healthPoints);
-                        $("#evilHealth").html(thiefDude.healthPoints);
-                        
-                        villain = thiefDude;
-                        break;
-                    case "Rhilo":
-                        $("#evil-image").attr("src", hornMageDude.picture);
-                        $("#evil-image").attr("alt", hornMageDude.name);
-                        $("#evilName").html(hornMageDude.name);
-                        $("#evilBreed").html(hornMageDude.breed);
-                        $("#evilWeapon").html(hornMageDude.weapons[0].weaponName);
-                        $("#evilStartHealth").html(hornMageDude.healthPoints);
-                        $("#evilHealth").html(hornMageDude.healthPoints);
-
-                        villain = hornMageDude;
-                        break;
-                    case "Wendalia":
-                        $("#evil-image").attr("src", thiefGirl.picture);
-                        $("#evil-image").attr("alt", thiefGirl.name);
-                        $("#evilName").html(thiefGirl.name);
-                        $("#evilBreed").html(thiefGirl.breed);
-                        $("#evilWeapon").html(thiefGirl.weapons[0].weaponName);
-                        $("#evilStartHealth").html(thiefGirl.healthPoints);
-                        $("#evilHealth").html(thiefGirl.healthPoints);
-                        
-                        villain = thiefGirl;
-                        break;
-                    case "Elvalix":
-                        $("#evil-image").attr("src", knightDude.picture);
-                        $("#evil-image").attr("alt", knightDude.name);
-                        $("#evilName").html(knightDude.name);
-                        $("#evilBreed").html(knightDude.breed);
-                        $("#evilWeapon").html(knightDude.weapons[0].weaponName);
-                        $("#evilStartHealth").html(knightDude.healthPoints);
-                        $("#evilHealth").html(knightDude.healthPoints);
-
-                        villain = knightDude;
-                        break;
-                    case "Mvrecic":
-                        $("#evil-image").attr("src", elfDude.picture);
-                        $("#evil-image").attr("alt", elfDude.name);
-                        $("#evilName").html(elfDude.name);
-                        $("#evilBreed").html(elfDude.breed);
-                        $("#evilWeapon").html(elfDude.weapons[0].weaponName);
-                        $("#evilStartHealth").html(elfDude.healthPoints);
-                        $("#evilHealth").html(elfDude.healthPoints);
-
-                        villain = elfDude;
-                        break;
-                }
-            });
-        });
-    </script>
+</head>
 <body>
 	<div class="container">
         <div class="jumbotron text-center">
             <h1>Dungeons &amp; Dragons</h1>
-        </div><br />
-        <div class="row">
-            <h4 class="battle-partner text-center">Choose your battle partner</h4>
-        </div>
-        <div class="row carousel">
-            <div class="col-lg-1">&nbsp;</div>
-            <div class="col-lg-2 thumbnail" id="villain_0"></div>
-            <div class="col-lg-2 thumbnail" id="villain_1"></div>
-            <div class="col-lg-2 thumbnail" id="villain_2"></div>
-            <div class="col-lg-2 thumbnail" id="villain_3"></div>
-            <div class="col-lg-2 thumbnail" id="villain_4"></div>
-            <div class="col-lg-1">&nbsp;</div>
         </div>
         <div class="row">
-            <div class="col-lg-4">
-                <div class="img-box-good">
-                    
+            <h4 class="battle-partner text-center">Choose Your Opponents</h4>
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <div id="hero_0"></div>
+                <div id="hero_1"></div>
+                <div id="hero_2"></div>
+                <div id="hero_3"></div>
+            </div>
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="good-winner">WINNER!!!</div>
+                        <div class="img-box-good">
+                            <img src="assets/images/empty-hero.png" alt="good" id="good-image" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="evil-winner">WINNER!!!</div>
+                        <div class="img-box-evil">
+                            <img src="assets/images/empty-villain-3.png" alt="evil" id="evil-image" />
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-4 text-center" id="divVS">VS.</div>
-            <div class="col-lg-4">
-                <div class="img-box-evil">
-                    <img src="assets/images/empty-villain-3.png" alt="evil" id="evil-image" />
+                <div class="row">
+                    <div class="col-lg-6 health-label-left">
+                        <h3 class="health-label-left text-center"><span class="label label-warning">Health <span class="badge" id="goodHealth">0</span></span></h3>
+                    </div>
+                    <div class="col-lg-6">
+                        <h3 class="health-label-right text-center"><span class="label label-danger">Health <span class="badge" id="evilHealth">0</span></span></h3>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-4 health-label-left">
-                <h3 class="health-label-left text-center"><span class="label label-warning">Health <span class="badge" id="goodHealth">180</span></span></h3>
-            </div>
-            <div class="col-lg-4">&nbsp;</div>
-            <div class="col-lg-4">
-                <h3 class="health-label-right text-center"><span class="label label-danger">Health <span class="badge" id="evilHealth">0</span></span></h3>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-5">&nbsp;</div>
-            <div class="col-lg-2"><span class="btn btn-warning btn-lg" id="btnAttack">ATTACK!!!</span></div>
-            <div class="col-lg-5">&nbsp;</div>
-        </div>
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="well stats">
-                    <div class="row">
-                        <div class="col-lg-3">
-                            Name:
-                        </div>
-                        <div class="col-lg-9" id="goodName">
-                            Barbara
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3">
-                            Breed:
-                        </div>
-                        <div class="col-lg-9" id="goodBreed">
-                            Orc
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3">
-                            Weapon: 
-                        </div>
-                        <div class="col-lg-9" id="goodWeapon">
-                            Broadsword
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3">
-                            Health:
-                        </div>
-                        <div class="col-lg-9" id="goodStartHealth">
-                            200
-                        </div>
-                    </div>
+                <div class="row" id="rowAttack">
+                    <div class="col-lg-3">&nbsp;</div>
+                    <div class="col-lg-6"><button class="btn btn-danger btn-lg" id="btnAttack">ATTACK!!!</button><button class="btn btn-warning btn-lg" id="btnNewGame">New Game</button><button class="btn btn-success btn-lg" id="btnReset">Reset</button></div>
+                    <div class="col-lg-3">&nbsp;</div>
+                </div><
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="well stats">
+                            <div class="row">
+                                <div class="col-lg-4 labels">
+                                    Name:
+                                </div>
+                                <div class="col-lg-8" id="goodName">
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 labels">
+                                    Breed:
+                                </div>
+                                <div class="col-lg-8" id="goodBreed">
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 labels">
+                                    Weapon: 
+                                </div>
+                                <div class="col-lg-8" id="goodWeapon">
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 labels">
+                                    Health:
+                                </div>
+                                <div class="col-lg-8" id="goodStartHealth">
+                                    
+                                </div>
+                            </div>
 
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="well game-info">
+                            <div class="row">
+                                <div class="col-lg-8 labels"># of Rounds</div>
+                                <div class="col-lg-4" id="numRounds"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-8 labels"># of Wins</div>
+                                <div class="col-lg-4" id="numWins"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-8 labels"># of Losses</div>
+                                <div class="col-lg-4" id="numLosses"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="well stats">
+                            <div class="row">
+                                <div class="col-lg-4 labels">
+                                    Name:
+                                </div>
+                                <div class="col-lg-8" id="evilName">
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 labels">
+                                    Breed:
+                                </div>
+                                <div class="col-lg-8" id="evilBreed">
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 labels">
+                                    Weapon: 
+                                </div>
+                                <div class="col-lg-8" id="evilWeapon">
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 labels">
+                                    Health:
+                                </div>
+                                <div class="col-lg-8" id="evilStartHealth">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                &nbsp;
+            <div class="col-lg-2">
+                <div id="villain_0"></div>
+                <div id="villain_1"></div>
+                <div id="villain_2"></div>
+                <div id="villain_3"></div>
+                <div id="villain_4"></div>
             </div>
-            <div class="col-lg-4">
-                <div class="well stats">
-                    <div class="row">
-                        <div class="col-lg-3">
-                            Name:
-                        </div>
-                        <div class="col-lg-9" id="evilName">
-                            
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3">
-                            Breed:
-                        </div>
-                        <div class="col-lg-9" id="evilBreed">
-                            
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3">
-                            Weapon: 
-                        </div>
-                        <div class="col-lg-9" id="evilWeapon">
-                            
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3">
-                            Health:
-                        </div>
-                        <div class="col-lg-9" id="evilStartHealth">
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </body>
 <!-- In-house javascript -->

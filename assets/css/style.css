@@ -11,18 +11,31 @@ h1 {
 .img-box-good {
     width: 360px;
     height: 420px;
-    background-image: url('../images/MagicianGirl.png');
-    background-color: #fff;
+    background-color: #C3CBDE;
     border-radius: 10px;
     border: 2px solid #EBCA63;
+    /*position:absolute;*/
 }
 
-.img-box-evil {
+.img-box-evil, .good-winner, .evil-winner {
     width: 360px;
     height: 420px;
     background-color: #C3CBDE;
     border-radius: 10px;
     border: 2px solid Red;
+    position:absolute;
+}
+
+.good-winner, .evil-winner {
+    z-index: 99;
+    opacity: 0.5;
+    display: none;
+    font-size: 36px;
+    font-weight: bold;
+    color: red;
+    text-align: center;
+    line-height: 420px;
+    margin: 0 auto;
 }
 
 #divVS {
@@ -40,23 +53,26 @@ h1 {
     color: red;
     background-image: url('../images/jumbotron-bg.png');
     border: 2px solid #4D537D;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
-
 
 .stats {
     color: maroon;
     background-color: darkgray;
 }
 
-.thumbnail {
+/*.thumbnail {
     display: flex;
-    width: 120px;
-    height: 165px;
-    margin-right: 25px;
-}
+    width: 80px;
+    height: 100px;
+}*/
 
-.thumbnailImage {
+.img-thumbnail {
+    width: 100px;
+    height: 135px;
     margin: 0 auto;
+    cursor: pointer;
 }
 
 .carousel {
@@ -68,7 +84,7 @@ h1 {
     color: maroon;
     text-shadow: 1px 1px black;
     background-color: white;
-    opacity: 0.5;
+    opacity: 0.7;
     width: 33.3%;
     margin: 0 auto;
     margin-bottom: 10px;
@@ -77,9 +93,23 @@ h1 {
     border-radius: 5px;
 }
 
-#evil-image {
+#evil-image, #good-image {
     width: 350px;
     height: 413px;
     padding-left: 6px;
     padding-top: 7px;
+}
+
+#rowAttack {
+    margin-bottom: 10px;
+}
+
+.labels {
+    font-weight: bold;
+}
+
+.game-info {
+    color: #fff;
+    background-color: black;
+    border: 1px solid green;
 }
