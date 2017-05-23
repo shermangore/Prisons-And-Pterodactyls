@@ -30,15 +30,15 @@ function Character (name, breed, healthPoints, attackPower, counterAttackPower, 
 function attack(player1, player2, attacker) {
     gameStarted = true;
     numberOfAttacks++;
-
+    
     $(".img-thumbnail").attr("disabled", "disabled");
     $("#btnNewGame").attr("disabled", "disabled");
     $("#btnReset").attr("disabled", "disabled");
 
-    player2.healthPoints -= player1.attackPower * numberOfAttacks;
-    player1.healthPoints -= player2.counterAttackPower;
-
     if (attacker === "h") {
+        player2.healthPoints -= (player1.attackPower * numberOfAttacks);
+        player1.healthPoints -= player2.counterAttackPower;
+
         if (player1.healthPoints <= 0) {
             heroHasLife = false;
             
@@ -58,6 +58,10 @@ function attack(player1, player2, attacker) {
             $("#evilHealth").text(player2.healthPoints);
         }
     } else {
+
+            player2.healthPoints -= player1.attackPower;
+            player1.healthPoints -= player2.counterAttackPower;
+
         if (player1.healthPoints <= 0) {
             villainHasLife = false;
             
@@ -173,6 +177,7 @@ $(document).ready(function() {
         gameStarted = false;
         heroHasLife = true;
         villainHasLife = true;
+        numberOfAttacks = 0;
 
         $("#evil-image").attr("src", "assets/images/empty-villain-3.png");
         $("#evilName").html("");
@@ -204,6 +209,7 @@ $(document).ready(function() {
         numberOfRounds = 0;
         wins = 0;
         losses = 0;
+        numberOfAttacks = 0;
 
         $("#evil-image").attr("src", "assets/images/empty-villain-3.png");
         $("#evilName").html("");
